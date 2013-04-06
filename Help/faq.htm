@@ -1,0 +1,143 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<meta name="GENERATOR" content="Microsoft FrontPage 5.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<title>FAQ</title>
+</head>
+
+<body>
+
+<h2>FAQ</h2>
+<ol>
+  <li>What are some good links to testing?</li>
+  <li>Does the MassDataHandler work only with MSTest?</li>
+  <li>Why would you ever have logic in the data layer, that's bad architecture?</li>
+  <li>Why do you call it a &quot;Database&quot; Unit Test when that's contradictory - if 
+  something is testing the database, it's no longer just a unit test?</li>
+  <li>Why not just use mock objects?</li>
+</ol>
+<hr>
+<h4>1. What are some good links to testing?</h4>
+<ul>
+  <li><a href="http://www.pragmaticprogrammer.com">
+  http://www.pragmaticprogrammer.com</a> - A practical site about agile 
+  processes and coding better.</li>
+  <li><a href="http://www.testdriven.com">http://www.testdriven.com</a> - A site 
+  &quot;dedicated to promoting techniques, tools, and general good will in the 
+  test-driven community.&quot;</li>
+  <li><a href="http://jimshore.textdriven.com">http://jimshore.textdriven.com</a> 
+  - A great agile advocate.</li>
+  <li><a href="http://weblogs.asp.net/rosherove/">
+  http://weblogs.asp.net/rosherove</a> - An MVP who frequently writes about 
+  agile methods</li>
+  <li><a href="http://aspnet.4guysfromrolla.com/articles/040605-1.aspx">
+  http://aspnet.4guysfromrolla.com/articles/040605-1.aspx</a> - An older article 
+  that discussed concepts for testing the data layer.</li>
+  <li><a href="http://www.codeproject.com/csharp/autp1.asp">
+  http://www.codeproject.com/csharp/autp1.asp</a> - A introductory tutorial to 
+  unit tests.</li>
+</ul>
+<hr>
+<h4>2. Does the MassDataHandler work only with MSTest?</h4>
+<p>No - it is simply a .Net 2.0 binary, and can be consumed by any .Net code - 
+including NUnit or even your own custom code.</p>
+<hr>
+<h4>3. Why would you ever have logic in the data layer, that's bad architecture?</h4>
+<p>Ideally all logic would be in easily-tested managed code, but the world isn't 
+ideal. There are legitimate reasons that logic may be in the data-layer:</p>
+<ul>
+  <li>Performance - certain complicated core stored procs (like for security), 
+  that aggregate tons of tables, may need to reside on the database for pure 
+  performance reasons.</li>
+  <li>Complex filters - often the filtering logic resides in the stored proc 
+  because you don't want to pull all 10 million rows back to the app server.</li>
+  <li>Legacy code - certain projects already have years of code in the stored 
+  procs, and the team culture may want to keep it that way.</li>
+</ul>
+<p>That an entire language (T-SQL) exists to program database objects tells you 
+that there are reasons to have logic in the database - a language wouldn't exist 
+unless there was a need for it.</p>
+<p>There are lots of ways to abstract logic out of the data tier and decouple 
+your tests from the database (better design, mocks, ADO.Net transactions, 
+embedded CLR functions in SQL 2005, etc...), but sometimes you're just going to 
+be stuck with logic in the datalayer, and during those times, it's nice to have 
+a tool to help test things.</p>
+<hr>
+<h4>4. Why do you call it a &quot;Database&quot; Unit Test when that's contradictory - if 
+something is testing the database, it's no longer just a unit test?</h4>
+<p>There will always be some purists who insist that testing a database is 
+contradictory to the very definition of a unit test - and anyone who doesn't 
+grasp that just doesn't &quot;get it&quot;. We think this view is too extreme. We fully 
+agree that ideally a unit test <i>should</i> only check a single thing, and 
+hitting a database requires multiple things (connect, insert data, run object, 
+get data, etc..), therefore a database test is beyond the scope of a &quot;pure&quot; unit 
+test. However, semantics aside, there can be legitimate logic in the data layer 
+and it adds value to be able to test that logic. A
+<a href="http://www.google.com/search?hl=en&q=database+unit+test&btnG=Google+Search">
+simple Google search</a> shows millions of results of people trying to unit test 
+the database. We refer to the MassDataHandler helping with &quot;Database&quot; Unit Tests 
+because:</p>
+<ul>
+  <li>They meet the main requirements of unit tests (<font face="Times New Roman" size="3"><a href="http://www.pragmaticprogrammer.com/titles/utc2/">Pragmatic 
+  Unit Testing in C# with NUnit</a> by Andrew Hunt and David Thomas)</font><ul>
+    <li><b>Automatic</b> - Run using any automatic testing framework you want.</li>
+    <li><b>Thorough</b> - By setting all the individual data that a test needs, 
+    you can test specific logic with as much detail required.</li>
+    <li><b>Repeatable</b> - Can run multiple times with the same result.</li>
+    <li><b>Independent</b> - This is the biggest problem, but it still works 
+    well enough:
+    <ul>
+      <li>First, each test <i>does</i> run independent of each other by creating 
+      its own data (as opposed to some solutions which require inter-related 
+      tests to run in a certain order, or install base data shared by all 
+      tests). </li>
+      <li>Given the steps in a database test, everything else should be reliable 
+      enough such that only the database logic is really being tested.<ul>
+        <li>Set up schema - (taken for granted, therefore not tested)</li>
+        <li>Connect to the database - (taken for granted, therefore not tested)</li>
+        <li>Populate the test data - (MDH makes this so reliable that it's not 
+        likely to fail, therefore taken for granted, therefore not tested)</li>
+        <li>Collect input parameters to call the data object, done with 
+        auto-generated code (taken for granted, therefore not tested)</li>
+        <li>Run the database object - this is the thing you are actually 
+        testing.</li>
+        <li>Generate a managed code object to store the data results (usually 
+        code-generated, therefore taken for 
+        granted, therefore not tested)</li>
+        <li>Perform assertions.</li>
+      </ul>
+      </li>
+    </ul>
+    </li>
+    <li><b>Professional</b> - They always pass, are quick, and are easily 
+    maintainable by others.</li>
+  </ul>
+  </li>
+  <li>They are run alongside all the other unit tests in a framework like MSTest.</li>
+  <li>They are differentiated from &quot;pure&quot; unit tests:<ul>
+    <li>Developers can distinguish them with a database category in their test 
+    suites.</li>
+    <li>We don't just call them &quot;unit tests&quot;, but rather &quot;database unit tests&quot;, 
+    so that we think of them with a clear distinction.</li>
+  </ul>
+  </li>
+  <li>They are not trying to ensure that your database connectivity works - 
+  that's taken for granted. (But the test will fail if there's no connectivity).</li>
+</ul>
+<p>The goal of the MassDataHandler isn't to change your semantics or buzzwords, 
+but rather add value by letting you test logic that resides in the database. 
+Whether you call this a &quot;database unit test&quot;, &quot;integration test&quot;, &quot;functional 
+test&quot;, &quot;xyz test&quot;, or &quot;you-have-bad 
+architecture-if-there's-logic-in-the-database test&quot; is your choice.</p>
+<hr>
+<h4>5. Why not just use mock objects?</h4>
+<p>Mock objects are great for mocking-out the database, but there are times when 
+there is legitimate logic in the database and you want to test that logic. In 
+these cases, mock objects don't solve the problem.</p>
+
+</body>
+
+</html>

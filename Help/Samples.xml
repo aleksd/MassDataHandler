@@ -1,0 +1,197 @@
+﻿<Node>
+  
+  
+  <Root>
+    <Table name="Customer">
+      <Row CustomerName="Homer Simpson" Notes="Nuclear Engineer" />
+    </Table>
+  </Root>
+
+  
+  
+  <Root>
+    <Table name="Customer">
+      <Row CustomerName="Homer Simpson" Notes="Nuclear Engineer" />
+      <Row CustomerName="Marge Simpson" Notes="Notes about Marge here" />
+    </Table>
+  </Root>
+
+  
+  
+  <Root>
+    <Variables>
+      <Variable name="lastName" value="Simpson" />
+    </Variables>
+    
+    <Table name="Customer">
+      <Default Notes="Simpson Family" />
+      <Row CustomerName="Homer $(lastName)" />
+      <Row CustomerName="Marge $(lastName)" />
+      <Row CustomerName="Bart $(lastName)" Notes="I do not belong here"/>
+      <Row CustomerName="Lisa $(lastName)" />
+      <Row CustomerName="Maggie $(lastName)" />
+    </Table>
+  </Root>
+
+  
+  
+  <Root>
+    <Variables>
+      <Variable name="lastName" value="Simpson" />
+    </Variables>
+
+    <Table name="Customer">
+
+      <Default Notes="Human - adult" />
+      <Row CustomerName="$(name1) $(lastName)" />
+
+      <Default Notes="Human - child" LastUpdate="06/21/1997" />
+      <Row CustomerName="$(name2) $(lastName)"/>
+
+    </Table>
+
+    <Variables>
+      <Variable name="name1" value="Homer" />
+      <Variable name="name2" value="Bart" />
+    </Variables>
+    
+  </Root>
+  
+  
+  <!-- Identity Inserts -->
+  <Root>
+    <Table name="Customer">
+      <Row CustomerName="Homer Simpson" />
+      <Row CustomerName="Marge Simpson" />
+    </Table>
+
+    <Table name="Product">
+      <Row ProductName="KrustBurger" Description="best burger ever" />
+    </Table>
+
+    <Table name="Order">
+      <Default LastUpdate="12/23/1997" />
+      <Row CustomerId="Customer.@1" ProductId="Product.@1" />
+      <Row CustomerId="Customer.@2" ProductId="Product.@1" />
+    </Table>
+    
+  </Root>
+
+  <Root>
+    <Table name="Product">
+      <Row ProductName="KrustBurger"  />
+    </Table>
+  </Root>
+
+  <!-- INCLUDE STATEMENTS -->
+
+  <!-- File 1: BaseData1 -->
+  <Root>
+    <Table name="Customer">
+      <Row CustomerName="Name 1" Notes="From Import 1" />
+      <Row CustomerName="Name 2" Notes="From Import 1" />
+    </Table>
+  </Root>
+  
+  <!-- File 2: BaseData2 -->
+<Root>
+  <Import resource="BaseData1.xml" />
+  
+  <Table name="Customer">
+    <Row CustomerName="Name 3" Notes="From Import 2" />
+  </Table>
+</Root>
+
+<!-- File 3: BaseData3 -->
+<Root>
+  <Table name="Customer">
+    <Row CustomerName="Name 4" Notes="From Import 3" />
+  </Table>
+</Root>
+
+<!-- File 2 -->
+
+<Root>
+  <Import resource="BaseData2.xml" />
+    <Import resource="BaseData3.xml" />
+    
+    <Table name="Customer">
+
+      <Row CustomerName="Homer Simpson" Notes="Nuclear Engineer" />
+    </Table>
+  </Root>
+
+
+  <!-- Aliases -->
+  <Root>
+    <Table name="Customer" alias="Customer_Frequent">
+      <Row CustomerName="Homer Simpson" />
+    </Table>
+
+    <Table name="Customer" alias="Customer_Rare">
+      <Row CustomerName="Lisa Simpson" />
+    </Table>
+
+    <Table name="Product">
+      <Row ProductName="KrustBurger" Description="best burger ever" />
+    </Table>
+
+    <Table name="Order">
+      <Row CustomerId="Customer_Frequent.@1" ProductId="Product.@1" />
+      <Row CustomerId="Customer_Rare.@1" ProductId="Product.@1" />
+    </Table>
+
+  </Root>
+
+
+  <!-- Default Sample for GUI -->
+  <Root>
+    <Variables>
+      <Variable name="lastName" value="Simpson" />
+    </Variables>
+
+    <Table name="Customer">
+      <Row CustomerName="Homer $(lastName)" />
+      <Row CustomerName="Marge $(lastName)" />
+    </Table>
+
+    <Table name="Product">
+      <Row ProductName="KrustBurger" Description="best burger ever" />
+    </Table>
+
+    <Table name="Order">
+      <Default LastUpdate="12/23/1997" />
+      <Row CustomerId="Customer.@1" ProductId="Product.@1" />
+      <Row CustomerId="Customer.@2" ProductId="Product.@1" />
+    </Table>
+
+  </Root>
+  
+
+<!-- More Data -->
+<Root>
+  <Table name="Customer">
+    <Row CustomerName="Homer Simpson" />
+    <Row CustomerName="Marge Simpson" />
+    <Row CustomerName="Bart Simpson" />
+  </Table>
+
+  <Table name="Product">
+    <Row ProductName="KrustBurger" Description="best burger ever" />
+  </Table>
+
+  <Table name="Order">
+    <Default LastUpdate="12/23/1997" />
+    <Row CustomerId="Customer.@1" ProductId="Product.@1" />
+    <Row CustomerId="Customer.@2" ProductId="Product.@1" />
+    <Row CustomerId="Customer.@3" ProductId="Product.@1" />
+  </Table>
+
+</Root>
+
+
+</Node>
+
+ 
+
+

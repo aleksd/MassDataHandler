@@ -1,0 +1,18 @@
+﻿<Root>
+  <Table name="Customer">
+    <Row CustomerName="Homer Simpson" />
+    <Row CustomerName="Marge Simpson" />
+  </Table>
+
+  <Table name="Product">
+    <Row ProductName="KrustBurger" Description="best burger ever" />
+  </Table>
+
+  <Table name="Order">
+    <Default LastUpdate="12/23/1997" />
+    <Row CustomerId="Customer.@1" ProductId="Product.@1" />
+    <Row CustomerId="Customer.@2" ProductId="Product.@1" />
+  </Table>
+
+</Root>
+

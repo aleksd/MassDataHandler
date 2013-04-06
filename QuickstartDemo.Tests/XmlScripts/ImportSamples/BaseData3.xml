@@ -1,0 +1,7 @@
+﻿<Root>
+  <Table name="Customer">
+    <Row CustomerName="Name 4" Notes="From Import 3" />
+  </Table>
+</Root>
+
+

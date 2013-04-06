@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="EndPoint" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" >
+  <Import Project="CommonProperties.msbuild" />
+  <PropertyGroup>
+    <basedir>xxxPassedInFromCommandLinexxx</basedir>
+
+    <TestDatabase>MassDataHandlerTest</TestDatabase>
+  </PropertyGroup>
+
+  <Target Name="LogProperties">
+    <Message Text="basedir: $(basedir)" />
+    <Message Text="mstestdir: $(mstestdir)" />
+
+    <Message Text="Database properties:" />
+    <Message Text="DBConstringSAUsername: $(DBConstringSAUsername)" />
+    <Message Text="DBConstringSAPassword: $(DBConstringSAPassword)" />
+    <Message Text="DBConstringSADataSource: $(DBConstringSADataSource)" />
+
+  </Target>
+
+  <Target Name="CreateDatabase">
+    <Message Text="Recreate the database used in the Quickstart Demo" />
+    <Exec Command="sqlcmd -U $(DBConstringSAUsername) -P $(DBConstringSAPassword) -S $(DBConstringSADataSource) -d Master -i &quot;Database.sql&quot;" />
+
+    <Message Text="Remove all Foreign Keys" />
+    <Exec Command="sqlcmd -U $(DBConstringSAUsername) -P $(DBConstringSAPassword) -S $(DBConstringSADataSource) -d $(TestDatabase) -i &quot;DropAllForeignKeys.sql&quot;" />
+
+  </Target>
+
+  <Target Name="Compile">
+    <Message Text="Building the entire solution" />
+    <MSBuild 
+    	Projects="$(basedir)\MassDataHandler.sln"
+    	Properties="Configuration=Debug" 
+    	Targets="build" />
+  </Target>
+
+  <Target Name="UnitTest">
+    <Message Text="Delete old files and Run unit tests" />
+    <Delete Files="$(basedir)\BuildProcess\TestResults\MassDataHandler.trx" />
+    <MakeDir Directories="$(basedir)\BuildProcess\TestResults" />
+    
+    <Exec WorkingDirectory="$(mstestdir)"
+      Command="MsTest &quot;/testcontainer:$(basedir)\MassDataHandler.Tests\bin\Debug\MassDataHandler.Tests.dll&quot; &quot;/resultsfile:$(basedir)\BuildProcess\TestResults\MassDataHandler.trx&quot;" />
+  </Target>
+
+  <Target Name="QuickStartDemo">
+    <Message Text="Delete old files and Run unit tests" />
+    <Delete Files="$(basedir)\BuildProcess\TestResults\QuickStartDemo.trx" />
+    <MakeDir Directories="$(basedir)\BuildProcess\TestResults" />
+    
+    <Exec WorkingDirectory="$(mstestdir)"
+      Command="MsTest &quot;/testcontainer:$(basedir)\QuickstartDemo.Tests\bin\Debug\QuickstartDemo.Tests.dll&quot; &quot;/resultsfile:$(basedir)\BuildProcess\TestResults\QuickStartDemo.trx&quot;" />
+  </Target>
+
+  <Target Name="OpenFiles">
+    
+    <!-- Open The readme file -->
+    <Exec WorkingDirectory="$(basedir)\.." Command="start readme.htm" />
+
+    <!-- Open the solution -->
+    <Exec  WorkingDirectory="$(basedir)\QuickstartDemo.Tests" Command="QuickstartDemo.Tests.csproj" />
+    
+  </Target>
+
+  <Target Name="CopyGuiBat">
+
+    <Exec ContinueOnError="true" Command="move /Y Open_GUI_Tool.bat ..\..\" />
+
+  </Target>
+  
+  <Target Name="EndPoint">
+
+    <CallTarget Targets="LogProperties" />
+
+    <Message Text="Build the framework" />
+    <CallTarget Targets="Compile" />
+    <CallTarget Targets="UnitTest" />
+
+    <Message Text="Run the quickstarts" />
+    <CallTarget Targets="CreateDatabase" />
+    <CallTarget Targets="QuickStartDemo" />
+    <CallTarget Targets="CopyGuiBat" />
+    
+    <CallTarget Targets="OpenFiles" />
+    
+  </Target>
+
+</Project>
+ 

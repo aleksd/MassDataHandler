@@ -1,0 +1,8 @@
+﻿<Root>
+  <Import resource="BaseData1.xml" />
+
+  <Table name="Customer">
+    <Row CustomerName="Name 3" Notes="From Import 2" />
+  </Table>
+</Root>
+
