@@ -559,7 +559,7 @@ namespace MassDataHandler.Core
           from Sys.tables T1, Sys.columns C1, Sys.types TP
           where
             C1.object_Id = T1.object_id
-            and C1.system_type_id = TP.system_type_id
+            and C1.user_type_id = TP.user_type_id
           and T1.Name = '" + strTableName + @"'
           order by C1.name
         ";
