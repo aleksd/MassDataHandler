@@ -175,6 +175,9 @@ namespace MassDataHandler.Core
         case "smalldatetime":
           return "DateTime";
 
+        case "time":
+          return "String";
+
         case "smallint":
           return "Int16";
 
@@ -202,6 +205,10 @@ namespace MassDataHandler.Core
         case "sysname":
         case "xml":
           return "String";
+
+        case "binary":
+        case "varbinary":
+          return "Byte[]";
 
         default:
           throw new ArgumentException("Unknown parameter type '" + strSqlType + "', cannot convert to a .Net Type.");
