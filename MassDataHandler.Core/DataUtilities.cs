@@ -560,6 +560,7 @@ namespace MassDataHandler.Core
           where
             C1.object_Id = T1.object_id
             and C1.user_type_id = TP.user_type_id
+            and TP.name != 'timestamp'
           and T1.Name = '" + strTableName + @"'
           order by C1.name
         ";
