@@ -148,7 +148,6 @@ namespace MassDataHandler.Core
       switch (strType)
       {
         case "GUID":
-          return strVal;
         case "BYTE[]":
           return "'" + strVal + "'";
       }
