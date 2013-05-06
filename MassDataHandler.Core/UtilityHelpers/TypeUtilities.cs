@@ -210,6 +210,10 @@ namespace MassDataHandler.Core
         case "varbinary":
           return "Byte[]";
 
+        case "geography":
+        case "geometry":
+          return "String";
+
         default:
           throw new ArgumentException("Unknown parameter type '" + strSqlType + "', cannot convert to a .Net Type.");
       }
